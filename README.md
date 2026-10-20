@@ -104,9 +104,10 @@ cargo build --example test_polling_hotplug --all-features --release
 
 About Version
 ----------------------------------------------
-CalVer `YY.MM.DD` (e.g. `26.10.20`): each release is date-stamped,
-no relation to the `uefi` crate version anymore.
-Requires `uefi 0.41 / uefi-raw 0.17` (see `Cargo.toml`).
+`41.yy.mm` (e.g. `41.26.10`): major tracks the `uefi` crate generation
+it builds against (`41` == `uefi 0.41 / uefi-raw 0.17`); `yy.mm` is the
+release date. Also monotonic over the legacy `36.1.x` line (`41 > 36`).
+Same-month re-releases have no number left — cut them next month.
 
 License
 ----------------------------------------------
