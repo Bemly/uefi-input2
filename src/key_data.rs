@@ -6,7 +6,7 @@
 
 use uefi::{Char16, Status, Result};
 use uefi::boot::ScopedProtocol;
-use uefi::proto::console::text::Key;
+use uefi::proto::console::text::{Key, ScanCode};
 use uefi_raw::protocol::console::InputKey;
 use crate::input::Input;
 use crate::simple_text_input_ex::*;
@@ -40,10 +40,14 @@ impl From<KeyData> for RawKeyData {
 }
 
 /// forward conversion to Rust struct
+///
+/// 0.41 起上游只提供 `TryFrom<InputKey>`（非法 UCS-2 如代理区会失败）：
+/// 失败时按 `Special(NULL)` 有损兜底并保留原 shift/toggle 状态，
+/// 调用方仍可用 `supports_modifiers()` 判断有效性。
 impl From<RawKeyData> for KeyData {
     fn from(raw: RawKeyData) -> Self {
         Self {
-            key: Key::from(raw.key),
+            key: Key::try_from(raw.key).unwrap_or(Key::Special(ScanCode::NULL)),
             key_state: raw.key_state,
         }
     }

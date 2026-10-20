@@ -104,10 +104,9 @@ cargo build --example test_polling_hotplug --all-features --release
 
 About Version
 ----------------------------------------------
-Major/Minor semver follows Minor/Patch for uefi-rs crate version.
-Patch semver is for uefi-input2 own version.
-
-such as: uefi-input2 36.1.x <=dependency= uefi-rs 0.36.1
+CalVer `YY.MM.DD` (e.g. `26.10.20`): each release is date-stamped,
+no relation to the `uefi` crate version anymore.
+Requires `uefi 0.41 / uefi-raw 0.17` (see `Cargo.toml`).
 
 License
 ----------------------------------------------

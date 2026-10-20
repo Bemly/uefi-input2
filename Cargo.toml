@@ -3,7 +3,7 @@ name = "uefi-input2"
 authors = ["Bemly <bemly_@petalmail.com>"]
 categories = ["embedded", "no-std", "api-bindings"]
 keywords = ["uefi", "efi"]
-version = "36.1.16"
+version = "26.10.20"
 edition = "2024"
 license = "Zed"
 readme = "README.md"
@@ -12,16 +12,18 @@ homepage = "https://github.com/Bemly/uefi-input2"
 description = "rusty wrapper for EFI SIMPLE TEXT INPUT EXTEND PROTOCOL, support shift&toggle state and advanced key events."
 
 [dependencies]
-uefi = "0.36.1"
-uefi-raw = "0.13.0"
+uefi = "0.41.0"
+uefi-raw = "0.17.0"
 
 [dev-dependencies]
-uefi = { version = "0.36.1", features = ["logger", "alloc", "global_allocator", "panic_handler"] }
+uefi = { version = "0.41.0", features = ["logger", "alloc", "global_allocator", "panic_handler"] }
 
 [features]
 default = []
 alloc = ["uefi/alloc"]
-extend = ["uefi/alloc"]
+# extend 是 alloc 的超集：init_keyboards_protocol 用 Vec/find_handles，
+# 单开 extend 必须能编（此前漏了这层蕴含）。
+extend = ["alloc"]
 
 [package.metadata.docs.rs]
 default-target = "x86_64-unknown-uefi"

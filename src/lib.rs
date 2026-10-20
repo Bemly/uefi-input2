@@ -45,7 +45,7 @@
 //!             // for maximum loop throughput (e.g., high-frequency GOP rendering),
 //!             // consider calling read_key_stroke_ex directly to save the extra protocol call.
 //!             let Some(event) = input.wait_for_key_event() else { continue };
-//!             if !check_event(event)? { continue }
+//!             if !check_event(&event)? { continue }
 //!
 //!             if let Some(data) = input.read_key_stroke_ex() {
 //!                 if data.shift() { println!("Shift is being held!") }
@@ -115,18 +115,24 @@ use uefi::boot::find_handles;
 ///
 /// #### Usage
 /// ```rust,no_run
-/// uefi_input2::with_stdins(|stdins| {
+/// # use uefi::Result;
+/// # use uefi::boot::check_event;
+/// # fn _demo() -> Result {
+/// uefi_input2::with_stdins(|stdins| -> Result<()> {
 ///     loop {
 ///         for keyboard in stdins.iter_mut() {
-///             let Some(event) = input.wait_for_key_event() else { continue };
-///             if !check_event(event)? { continue }
+///             let Some(event) = keyboard.wait_for_key_event() else { continue };
+///             if !check_event(&event)? { continue }
 ///
 ///             if let Some(key_data) = keyboard.read_key_stroke_ex() {
 ///                 // just do it!
+///                 let _ = key_data;
 ///             }
 ///         }
 ///     }
-///  }).unwarp();
+///  }).unwrap();
+/// # Ok(())
+/// # }
 /// ```
 #[cfg(feature = "alloc")]
 pub fn with_stdins<F, R>(mut f: F) -> Result<R>

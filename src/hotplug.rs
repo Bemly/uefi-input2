@@ -8,6 +8,7 @@ use alloc::vec::Vec;
 use core::ffi::c_void;
 use core::hint::spin_loop;
 use core::ptr::NonNull;
+use core::time::Duration;
 use uefi::boot::{check_event, create_event, locate_handle_buffer, open_protocol_exclusive, register_protocol_notify, set_timer, ScopedProtocol, SearchType, TimerTrigger};
 use uefi::{Event, Identify, Result};
 use uefi_raw::table::boot::{EventType, Tpl};
@@ -187,9 +188,12 @@ impl KeyboardHotPlugMonitor {
             )?
         };
 
+        // 配置值单位是 UEFI SetTimer 的 100ns（见 config 注释），转 Duration。
         set_timer(
             &timer_event,
-            TimerTrigger::Periodic(REFRESH_POSITIVE_INPUT_DEVICE_TIME::get()),
+            TimerTrigger::Periodic(Duration::from_nanos(
+                REFRESH_POSITIVE_INPUT_DEVICE_TIME::get().saturating_mul(100),
+            )),
         )?;
 
         macro_rules! f {
@@ -206,8 +210,8 @@ impl KeyboardHotPlugMonitor {
             spin_loop();
 
             // Check if the timer has fired (non-blocking)
-            // check_event returns Ok(()) if signaled, or an Error if not yet signaled.
-            if let Ok(true) = unsafe { check_event(timer_event.unsafe_clone()) } {
+            // check_event returns Ok(true) if signaled, or an Error if not yet signaled.
+            if let Ok(true) = check_event(&timer_event) {
                 Self::refresh_positive(&mut keyboards);
                 // Run initial user-defined update
                 f!(update);

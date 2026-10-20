@@ -24,7 +24,7 @@ fn main() -> Status {
         }
 
         let Some(event) = input.wait_for_key_event() else { return Ok(()) };
-        if !check_event(event)? { return Ok(()) }
+        if !check_event(&event)? { return Ok(()) }
 
         match input.read_key_stroke_ex() {
             Some(KeyData { key: Printable(c), .. }) => {

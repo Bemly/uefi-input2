@@ -31,7 +31,7 @@ fn main() -> Status {
 
             for keyboard in stdins.iter_mut() {
                 if let Some(event) = keyboard.wait_for_key_event() {
-                    if check_event(event)? {
+                    if check_event(&event)? {
                         if let Some(key_data) = keyboard.read_key_stroke_ex() {
                             if key_data.supports_modifiers() && key_data.ctrl() {
                                 print!("[Ctrl] ");
